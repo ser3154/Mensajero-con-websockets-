@@ -21,6 +21,10 @@ const enviarMensaje = () => {
     let txtNombre = document.getElementById('txtNombre');
     let txtMensaje = document.getElementById('txtMensaje');
 
+    if(txtNombre.value.trim() === '' || txtMensaje.value.trim() === '') {
+        return; 
+    }
+
     stompCliente.publish({
         destination: '/app/envio',
         body: JSON.stringify({
@@ -28,17 +32,23 @@ const enviarMensaje = () => {
             mensaje: txtMensaje.value  
         })
     });
+    txtMensaje.value = '';
 };
 
 const mostrarMensaje = (mensaje) => {
     const body = JSON.parse(mensaje);
     const ULMensajes = document.getElementById('ULMensajes');
+    
     const mensajeLI = document.createElement('li');
+    mensajeLI.classList.add('mensaje-contenedor');
 
-    mensajeLI.classList.add('list-group-item');
-    mensajeLI.innerHTML = `<strong>${body.nombre}</strong>: ${body.mensaje}`;
-
+    mensajeLI.innerHTML =`<div class="burbuja"> <div class="nombre-usuario"><strong>${body.nombre}</strong></div>
+            <div>${body.mensaje}</div> </div>`;
+   
     ULMensajes.appendChild(mensajeLI);
+
+    const chatBox = document.getElementById('mensajes');
+    chatBox.scrollTop = chatBox.scrollHeight;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
